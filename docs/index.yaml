@@ -1,0 +1,25 @@
+apiVersion: v1
+entries:
+  clickhouse-operator:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2020-12-23T15:53:15.206850003+08:00"
+    description: clickhouse-operator Helm chart for Kubernetes
+    digest: 9b7708a1cfe6ecf1ca61ad24e5d9d9e19863cba99e5a5ed4909bb3a338fee940
+    home: https://github.com/Altinity/clickhouse-operator
+    keywords:
+    - operator
+    - clickhouse
+    - database
+    maintainers:
+    - email: tai_chong@foxmail.com
+      name: TCeason
+      url: https://tceason.github.io/
+    name: clickhouse-operator
+    sources:
+    - https://github.com/Altinity/clickhouse-operator
+    type: application
+    urls:
+    - https://tceason.github.io/clickhouse-helm-chart/clickhouse-operator-0.0.1.tgz
+    version: 0.0.1
+generated: "2020-12-23T15:53:15.206322035+08:00"
