@@ -18,7 +18,7 @@
 
 apiVersion: v2
 name: clickhouse
-Version: "19.17.6.36"
+Version: "19.17"
 description: Helm Chart for deploying a sharded and replicated ClickHouse cluster
 home: https://github.com/Altinity/clickhouse-operator
 icon: https://clickhouse.yandex/images/logo.png

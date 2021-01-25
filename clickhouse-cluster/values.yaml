@@ -26,6 +26,7 @@ clickhouse:
     - name: shard0
       replicas:
         - name: shard0-replica0
+        - name: shard0-replica1
           # storageType allows to define the kind of storage you want to assign. See below for additional configuration
           # - local                         - use local (host) directory
           # - persistentVolumeClaim         - use existing PersistentVolumeClaim

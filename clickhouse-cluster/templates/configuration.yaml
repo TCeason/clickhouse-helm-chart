@@ -32,12 +32,17 @@ data:
 
       <logger>
         <level>error</level>
-        <log></log>
-        <errorlog></errorlog>
-        <console>1</console>
+        <log>/var/log/clickhouse-server/clickhouse-server.log</log>
+        <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
+        <size>1000M</size>
       </logger>
 
-      <!-- <display_name>clickhouse-cluster</display_name> -->
+      <path>/var/lib/clickhouse/</path>
+      <tmp_path>/var/lib/clickhouse/tmp/</tmp_path>
+      <user_files_path>/var/lib/clickhouse/user_files/</user_files_path>
+      <format_schema_path>/var/lib/clickhouse/format_schemas/</format_schema_path>
+
+      <display_name>Chronus DB</display_name>
       <http_port>{{ .Values.clickhouse.ports.http }}</http_port>
       <tcp_port>{{ .Values.clickhouse.ports.native }}</tcp_port>
 
@@ -50,9 +55,10 @@ data:
       </compression>
 
       <distributed_ddl>
-        <path>/clickhouse/task_queue/ddl</path>
+        <path>/chronus/task_queue/ddl</path>
       </distributed_ddl>
 
+      <default_on_cluster_name>{{ $.Values.clickhouse.clusterName }}</default_on_cluster_name>
       <remote_servers>
         <{{ $.Values.clickhouse.clusterName }}>
           {{- range $shardIndex, $shard := .Values.clickhouse.shards }}
@@ -69,6 +75,36 @@ data:
           </shard>
           {{- end }}
         </{{ $.Values.clickhouse.clusterName }}>
+        <logical_consistency_cluster>
+          {{- range $shardIndex, $shard := .Values.clickhouse.shards }}
+          <shard>
+            <weight>{{ default $shard.weight "1" }}</weight>
+            {{- range $replicaIndex, $replica := .replicas }}
+            <replica>
+              <host>{{ include "defaultObjectName" $ }}-s{{ $shardIndex }}-r{{ $replicaIndex }}</host>
+              <port>{{ $.Values.clickhouse.ports.native }}</port>
+              <user>{{ (index $.Values.clickhouse.users 0).username }}</user>
+              <password>{{ (index $.Values.clickhouse.users 0).password }}</password>
+            </replica>
+            {{- end }}
+          </shard>
+          {{- end }}
+        </logical_consistency_cluster>
+        <physical_consistency_cluster>
+          {{- range $shardIndex, $shard := .Values.clickhouse.shards }}
+          <shard>
+            <weight>{{ default $shard.weight "1" }}</weight>
+            {{- range $replicaIndex, $replica := .replicas }}
+            <replica>
+              <host>{{ include "defaultObjectName" $ }}-s{{ $shardIndex }}-r{{ $replicaIndex }}</host>
+              <port>{{ $.Values.clickhouse.ports.native }}</port>
+              <user>{{ (index $.Values.clickhouse.users 0).username }}</user>
+              <password>{{ (index $.Values.clickhouse.users 0).password }}</password>
+            </replica>
+            {{- end }}
+          </shard>
+          {{- end }}
+        </physical_consistency_cluster>
       </remote_servers>
 
       <profiles>
