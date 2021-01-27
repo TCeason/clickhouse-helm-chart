@@ -1,0 +1,89 @@
+{{ $shardscount := .Values.clickhouse.shardscount }}
+{{ $plicascount := .Values.clickhouse.replicascount}}
+---
+apiVersion: "clickhouse.altinity.com/v1"
+kind: "ClickHouseInstallation"
+metadata:
+  name: {{ include "defaultObjectName" $ }}-s{{ $shardscount }}-r{{ $replicascount }}-cluster
+  namespace: {{ .Release.Namespace }}
+spec:
+  configuration:
+    zookeeper:
+      nodes:
+        - host: zookeeper.{{ .Release.Namespace }}
+          port: 2181
+    users:
+      readonly/profile: readonly
+      #     <users>
+      #        <readonly>
+      #          <profile>readonly</profile>
+      #        </readonly>
+      #     </users>
+      test/networks/ip:
+        - "127.0.0.1"
+        - "::/0"
+      #     <users>
+      #        <test>
+      #          <networks>
+      #            <ip>127.0.0.1</ip>
+      #            <ip>::/0</ip>
+      #          </networks>
+      #        </test>
+      #     </users>
+      test/profile: default
+      test/quotas: default
+      profiles:
+        readonly/readonly: "1"
+        #      <profiles>
+        #        <readonly>
+        #          <readonly>1</readonly>
+        #        </readonly>
+        #      </profiles>
+        default/max_memory_usage: "100000"
+      quotas:
+        default/interval/duration: "3600"
+        #     <quotas>
+        #       <default>
+        #         <interval>
+        #           <duration>3600</duration>
+        #         </interval>
+        #       </default>
+        #     </quotas>
+      settings:
+        compression/case/method: zstd
+        #      <compression>
+        #        <case>
+        #          <method>zstd</method>
+        #        </case>
+        #      </compression>
+        disable_internal_dns_cache: 1
+        #      <disable_internal_dns_cache>1</disable_internal_dns_cache>
+    clusters:
+      - name: cluster
+        # Templates are specified for this cluster explicitly
+        templates:
+          podTemplate: pod-template-with-volume
+        layout:
+          shardsCount: {{ $shardscount }}
+          replicasCount: {{ $replicascount }}
+
+  templates:
+    podTemplates:
+      - name: pod-template-with-volume
+        spec:
+          containers:
+            - name: clickhouse
+              image: {{ $.Values.clickhouse.image }}
+              imagePullPolicy: {{ $.Values.clickhouse.imagePullPolicy }}
+              volumeMounts:
+                - name: storage-vc-template
+                  mountPath: /var/lib/clickhouse
+
+    volumeClaimTemplates:
+      - name: storage-vc-template
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi

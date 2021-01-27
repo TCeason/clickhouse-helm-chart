@@ -3,7 +3,8 @@ clickhouse:
 
   # default cluster name
   clusterName: cluster
-
+  shardscount: 1
+  replicascount: 2
   # User Configuration
   users:
     - username: clickhouse
@@ -73,20 +74,20 @@ clickhouse:
   ipv4: true
   ipv6: false
 
-  # zookeeper configuration
-  zookeeper:
-    # internal - start single instance zookeeper with this helm chart (for development purposes)
-    # external - use external available zookeeper servers (for production use)
-    mode: internal
+# zookeeper configuration
+zookeeper:
+  # internal - start single instance zookeeper with this helm chart (for development purposes)
+  # external - use external available zookeeper servers (for production use)
+  mode: internal
 
-    # configuration for internal zookeeper instance
-    internal:
-      image: zookeeper:3.5
-      imagePullPolicy: Always
+  # configuration for internal zookeeper instance
+  internal:
+    image: zookeeper:3.5
+    imagePullPolicy: Always
 
-    # configuration for external zookeeper cluster
-    external:
-      # list of external zookeeper instances
-      instances:
-        - host: zk-1
-          port: 2181
+  # configuration for external zookeeper cluster
+  external:
+    # list of external zookeeper instances
+    instances:
+      - host: zk-1
+        port: 2181

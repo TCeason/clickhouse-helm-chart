@@ -1,9 +1,0 @@
-
-clickhouse:
-  shards:
-    - name: shard0
-      replicas:
-        - name: shard0-replica0
-    - name: shard1
-      replicas:
-        - name: shard1-replica0

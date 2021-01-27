@@ -1,8 +1,7 @@
 # This file is part of the ClickHouse Helm Chart
 #    https://gitlab.com/MatthiasLohr/clickhouse-helm-chart
 #
-# Copyright 2020 Matthias Lohr <mail@mlohr.com>
-#                Dorian Cantzen <dorian@extrument.com>
+# Copyright 2020 TCeason <tai_chong@foxmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
