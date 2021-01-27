@@ -1,5 +1,7 @@
 {{ $shardscount := .Values.clickhouse.shardscount }}
-{{ $plicascount := .Values.clickhouse.replicascount}}
+{{ $replicascount := .Values.clickhouse.replicascount }}
+{{ $username := (index $.Values.clickhouse.user 0).username }}
+{{ $password := (index $.Values.clickhouse.user 0).username }}
 ---
 apiVersion: "clickhouse.altinity.com/v1"
 kind: "ClickHouseInstallation"
@@ -19,9 +21,8 @@ spec:
       #          <profile>readonly</profile>
       #        </readonly>
       #     </users>
-      test/networks/ip:
-        - "127.0.0.1"
-        - "::/0"
+      {{ $username }}/password: {{ $password }}
+      {{ $username }}/networks/ip: ["127.0.0.1", "::/0"]
       #     <users>
       #        <test>
       #          <networks>
@@ -30,8 +31,8 @@ spec:
       #          </networks>
       #        </test>
       #     </users>
-      test/profile: default
-      test/quotas: default
+      {{ $username }}/profile: default
+      {{ $username }}/quotas: default
       profiles:
         readonly/readonly: "1"
         #      <profiles>

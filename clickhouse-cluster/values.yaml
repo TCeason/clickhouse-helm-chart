@@ -6,9 +6,11 @@ clickhouse:
   shardscount: 1
   replicascount: 2
   # User Configuration
-  users:
+  user:
     - username: clickhouse
       password: GeE0Wn7w72EPucyR
+      networks:
+        - ip:[127.0.0.1, ::/0]
   # Port configuration, see https://clickhouse.tech/docs/en/interfaces/
   ports:
     # Port for the native CLI interface, see https://clickhouse.tech/docs/en/interfaces/tcp/
@@ -76,6 +78,7 @@ clickhouse:
 
 # zookeeper configuration
 zookeeper:
+  replicas: 3
   # internal - start single instance zookeeper with this helm chart (for development purposes)
   # external - use external available zookeeper servers (for production use)
   mode: internal

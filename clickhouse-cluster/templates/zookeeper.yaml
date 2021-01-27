@@ -65,7 +65,7 @@ spec:
     matchLabels:
       app: zookeeper
   serviceName: zookeepers
-  replicas: 3
+  replicas: {{ $.Values.zookeeper.replicas }}
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
