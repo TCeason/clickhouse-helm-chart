@@ -1,7 +1,7 @@
 apiVersion: v2
-appVersion: 1.16.0
+appVersion: 0.1.0
 description: clickhouse-operator Helm chart for Kubernetes
-home: https://github.com/Altinity/clickhouse-operator
+home: https://github.com/TCeason/clickhouse-operator
 keywords:
 - operator
 - clickhouse
@@ -12,6 +12,6 @@ maintainers:
   url: https://tceason.github.io/
 name: clickhouse-operator
 sources:
-- https://github.com/Altinity/clickhouse-operator
+- https://github.com/TCeason/clickhouse-operator
 type: application
-version: 0.0.1
+version: 0.1.0

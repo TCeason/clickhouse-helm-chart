@@ -1,96 +1,47 @@
 # Configuration for the ClickHouse cluster to be started
 clickhouse:
-
   # default cluster name
-  clusterName: cluster
+  clusterName: all-nodes
+  # shards count can not scale in this value.
   shardscount: 1
+  # replicas count can not modify this value when the cluster has already created.
   replicascount: 2
-  # User Configuration
-  user:
-    - username: clickhouse
-      password: GeE0Wn7w72EPucyR
-      networks:
-        - ip:[127.0.0.1, ::/0]
-  # Port configuration, see https://clickhouse.tech/docs/en/interfaces/
-  ports:
-    # Port for the native CLI interface, see https://clickhouse.tech/docs/en/interfaces/tcp/
-    native: 9000
-
-    # Port for HTTP/REST interface, see https://clickhouse.tech/docs/en/interfaces/http/
-    http: 8123
-
-  # If no explicit configuration for PersistentVolumeClaims is defined with the replicas,
-  # create new PersistentVolumeClaims with this storage class:
-  defaultStorageClassName: default
-  defaultStorageResourceRequest: 1Gi
-
-  # Shart configuration, see https://clickhouse.tech/docs/en/operations/table_engines/distributed/
-  shards:
-    - name: shard0
-      replicas:
-        - name: shard0-replica0
-        - name: shard0-replica1
-          # storageType allows to define the kind of storage you want to assign. See below for additional configuration
-          # - local                         - use local (host) directory
-          # - persistentVolumeClaim         - use existing PersistentVolumeClaim
-          # - existingPersistentVolumeClaim - create new PersistentVolumeClaim based on defined storage class
-          #storageType: local
-
-
-          # configuration options for storageType = local
-          #storage: 2Gi  # sprage sizce. If not defined will fallback to defaultStorageResourceRequest
-          #path: /var/lib/clickhouse/shardX/replicaX/data  # must exist before and write access for 101:101
-
-
-          # configuration options for storageType = persistentVolumeClaim
-          # Specification: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#persistentvolumeclaimspec-v1-core
-          #persistentVolumeClaim:
-          #    accessModes:
-          #      - ReadWriteOnce
-          #    storageClassName: default
-          #    resources:
-          #      requests:
-          #        storage: 1Gi
-
-
-          # configuration options for storageType = existingPersistentVolumeClaim
-          #existingPersistentVolumeClaimName: clickhouse-persistent-volume-claim  # (will be suffixed with shard/replica index)
-
 
   # ClickHouse server image configuration
   image: tceason/clickhouse-server:v19.17.6.36-stable
   imagePullPolicy: Always
 
-  # By default, this helm chart will create a service for getting access to the cluster.
-  # Using this configuration it is possible to adjust the service settings.
-  service:
-    # Should the service be created by the helm chart?
-    enabled: true
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "0.5"
 
-    # Type of the service. Use ClusterIP for internal access, LoadBalancer for external access.
+  # User Configuration
+  user:
+    - username: clickhouse
+      password: c1ickh0use0perator
+      networks:
+        - "127.0.0.1"
+        - "::/0"
+
+  ports:
+    # Port for the native interface, see https://clickhouse.tech/docs/en/interfaces/tcp/
+    tcp: 9000
+
+    # Port for HTTP/REST interface, see https://clickhouse.tech/docs/en/interfaces/http/
+    http: 8123
+
+  # servicee, value: ClusterIP/NodePort/LoadBalancer
+  # see https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  svc:
     type: ClusterIP
-
-    # Define the loadBalancerIP if type is set to LoadBalancer and you want to request a special IP address.
-    loadBalancerIP:
-
-  ipv4: true
-  ipv6: false
+    # If type: LoadBalancer, can use https://docs.qingcloud.com/product/container/qke/index#%E4%B8%8E-qingcloud-iaas-%E7%9A%84%E6%95%B4%E5%90%88
+    qceip:
 
 # zookeeper configuration
 zookeeper:
   replicas: 3
-  # internal - start single instance zookeeper with this helm chart (for development purposes)
-  # external - use external available zookeeper servers (for production use)
-  mode: internal
 
-  # configuration for internal zookeeper instance
-  internal:
-    image: zookeeper:3.5
-    imagePullPolicy: Always
-
-  # configuration for external zookeeper cluster
-  external:
-    # list of external zookeeper instances
-    instances:
-      - host: zk-1
-        port: 2181
+  # configuration for zookeeper instance
+  image: docker.io/zookeeper:3.6.0
+  imagePullPolicy: Always

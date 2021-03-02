@@ -16,10 +16,11 @@
 # limitations under the License.
 
 apiVersion: v2
-name: clickhouse
-Version: "19.17"
+appVersion: "19.17"
+name: clickhouse-cluster
+Version: 0.1.0
 description: Helm Chart for deploying a sharded and replicated ClickHouse cluster
-home: https://github.com/Altinity/clickhouse-operator
+home: https://github.com/TCeason/clickhouse-helm-chart
 icon: https://clickhouse.yandex/images/logo.png
 type: application
 kubeVersion:
@@ -27,7 +28,7 @@ keywords:
   - clickhouse
 
 sources:
-  - https://github.com/Altinity/clickhouse-operator
+  - https://github.com/TCeason/clickhouse-helm-chart
 
 maintainers:
   - email: tai_chong@foxmail.com

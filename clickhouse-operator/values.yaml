@@ -1,2 +1,8 @@
 # Default values for ClickHouse-operator
 
+operator:
+  image: tceason/chronus-operator:0.1.0
+  imagePullPolicy: Always
+metrics_operator:
+  image: tceason/chronus-metrics-operator:0.1.0
+  imagePullPolicy: Always

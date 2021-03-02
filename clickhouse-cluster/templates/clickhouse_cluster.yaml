@@ -1,18 +1,18 @@
 {{ $shardscount := .Values.clickhouse.shardscount }}
 {{ $replicascount := .Values.clickhouse.replicascount }}
 {{ $username := (index $.Values.clickhouse.user 0).username }}
-{{ $password := (index $.Values.clickhouse.user 0).username }}
+{{ $password := (index $.Values.clickhouse.user 0).password }}
 ---
-apiVersion: "clickhouse.altinity.com/v1"
+apiVersion: "clickhouse.qingcloud.com/v1"
 kind: "ClickHouseInstallation"
 metadata:
-  name: {{ include "defaultObjectName" $ }}-s{{ $shardscount }}-r{{ $replicascount }}-cluster
+  name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
   configuration:
     zookeeper:
       nodes:
-        - host: zookeeper.{{ .Release.Namespace }}
+        - host: zk-client-{{ .Release.Name }}.{{ .Release.Namespace }}
           port: 2181
     users:
       readonly/profile: readonly
@@ -22,7 +22,10 @@ spec:
       #        </readonly>
       #     </users>
       {{ $username }}/password: {{ $password }}
-      {{ $username }}/networks/ip: ["127.0.0.1", "::/0"]
+      {{ $username }}/networks/ip:
+        {{- range $ipIndex, $ip := (index $.Values.clickhouse.user 0).networks }}
+        - {{ $ip }}
+        {{- end }}
       #     <users>
       #        <test>
       #          <networks>
@@ -60,7 +63,7 @@ spec:
         disable_internal_dns_cache: 1
         #      <disable_internal_dns_cache>1</disable_internal_dns_cache>
     clusters:
-      - name: cluster
+      - name: {{ $.Values.clickhouse.clusterName }}
         # Templates are specified for this cluster explicitly
         templates:
           podTemplate: pod-template-with-volume
@@ -68,20 +71,57 @@ spec:
           shardsCount: {{ $shardscount }}
           replicasCount: {{ $replicascount }}
 
+  defaults:
+    templates:
+      podTemplate: pod-template-with-volume
+      dataVolumeClaimTemplate: data
+      logVolumeClaimTemplate: data
+      serviceTemplate: chi-svc-template
+
   templates:
+    serviceTemplates:
+      - name: chi-svc-template
+        {{- if eq .Values.clickhouse.svc.type "LoadBalancer" }}
+        metadata:
+          annotations:
+            service.beta.kubernetes.io/qingcloud-load-balancer-eip-ids: {{ $.Values.clickhouse.svc.qceip }}
+            service.beta.kubernetes.io/qingcloud-load-balancer-type: "0"
+        {{- end }}
+        spec:
+          ports:
+            - name: http
+              port: {{ $.Values.clickhouse.ports.http }}
+            - name: tcp
+              port: {{ $.Values.clickhouse.ports.tcp }}
+          type: {{ $.Values.clickhouse.svc.type }}
+
     podTemplates:
       - name: pod-template-with-volume
         spec:
+          affinity:
+            # Locate only one pod on each host
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 1
+                  podAffinityTerm:
+                    labelSelector:
+                      matchExpressions:
+                        - key: "clickhouse.qingcloud.com/chi"
+                          operator: In
+                          values:
+                          - {{ .Release.Name }}
+                    topologyKey: "kubernetes.io/hostname"
           containers:
             - name: clickhouse
               image: {{ $.Values.clickhouse.image }}
               imagePullPolicy: {{ $.Values.clickhouse.imagePullPolicy }}
               volumeMounts:
-                - name: storage-vc-template
+                - name: data
                   mountPath: /var/lib/clickhouse
 
     volumeClaimTemplates:
-      - name: storage-vc-template
+      - name: data
+        reclaimPolicy: Retain
         spec:
           accessModes:
             - ReadWriteOnce
