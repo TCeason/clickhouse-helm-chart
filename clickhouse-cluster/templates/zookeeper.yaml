@@ -74,6 +74,8 @@ spec:
       labels:
         app: zk-{{ .Release.Name }}
         what: node
+      annotations:
+        backup.velero.io/backup-volumes: datadir-volume-{{ .Release.Name }}-{{ .Release.Namespace }}
     spec:
       affinity:
         podAntiAffinity:

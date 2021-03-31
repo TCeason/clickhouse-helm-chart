@@ -97,6 +97,9 @@ spec:
 
     podTemplates:
       - name: pod-template-with-volume
+        metadata:
+          annotations:
+            backup.velero.io/backup-volumes: data
         spec:
           affinity:
             # Locate only one pod on each host
