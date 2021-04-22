@@ -2,6 +2,10 @@
 {{ $replicascount := .Values.clickhouse.replicascount }}
 {{ $username := (index $.Values.clickhouse.user 0).username }}
 {{ $password := (index $.Values.clickhouse.user 0).password }}
+{{- $zkreplicas := int .Values.zookeeper.replicas -}}
+{{- $args := list -}}
+{{- $name :=  .Release.Name -}}
+{{- $namespace := .Release.Namespace -}}
 ---
 apiVersion: "clickhouse.qingcloud.com/v1"
 kind: "ClickHouseInstallation"
@@ -12,8 +16,11 @@ spec:
   configuration:
     zookeeper:
       nodes:
-        - host: zk-client-{{ .Release.Name }}.{{ .Release.Namespace }}
-          port: 2181
+        {{- range untilStep 0 $zkreplicas 1 -}}
+          {{ $args = printf "%s-%s-%d" "zk" $name . }}
+          - host: {{ $args }}.zk-server-{{ $name }}.{{ $namespace }}
+            port: 2181
+        {{- end }}
     users:
       readonly/profile: readonly
       #     <users>

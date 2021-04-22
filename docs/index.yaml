@@ -3,9 +3,9 @@ entries:
   clickhouse-cluster:
   - apiVersion: v2
     appVersion: "19.17"
-    created: "2021-03-31T11:15:05.928911217+08:00"
+    created: "2021-04-22T22:16:49.19082578+08:00"
     description: Helm Chart for deploying a sharded and replicated ClickHouse cluster
-    digest: 06a23efe0283155eb9b86a0d2d49ddcd9c41d4bedfc4814503a7af387b5f67eb
+    digest: a5f4ca702ac4a726586c73ac4c5a70cecdb96b629d791f768cb6f7ef8c45e844
     home: https://github.com/TCeason/clickhouse-helm-chart
     icon: https://clickhouse.yandex/images/logo.png
     keywords:
@@ -24,9 +24,9 @@ entries:
   clickhouse-operator:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-03-31T11:15:05.929697623+08:00"
+    created: "2021-04-22T22:16:49.191292536+08:00"
     description: clickhouse-operator Helm chart for Kubernetes
-    digest: 79498b6bbebc9d5c3a90de76e508ac2acded14c9d76df1d933baf4cad6362f02
+    digest: 7f4d399093d2e68ffb3af4920f48c289d77fba7bf8ef0189c5cd2f087d13fbe5
     home: https://github.com/TCeason/clickhouse-operator
     keywords:
     - operator
@@ -43,4 +43,4 @@ entries:
     urls:
     - https://tceason.github.io/clickhouse-helm-chart/clickhouse-operator-0.1.0.tgz
     version: 0.1.0
-generated: "2021-03-31T11:15:05.927898786+08:00"
+generated: "2021-04-22T22:16:49.190120877+08:00"
