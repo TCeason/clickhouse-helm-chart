@@ -12,9 +12,8 @@ clickhouse:
   imagePullPolicy: Always
 
   resources:
-    requests:
-      memory: "1Gi"
-      cpu: "0.5"
+    memory: "1Gi"
+    cpu: "0.5"
 
   # User Configuration
   user:
@@ -45,3 +44,7 @@ zookeeper:
   # configuration for zookeeper instance
   image: docker.io/zookeeper:3.6.0
   imagePullPolicy: Always
+
+  resources:
+    memory: "1Gi"
+    cpu: "0.5"

@@ -128,6 +128,13 @@ spec:
               volumeMounts:
                 - name: data
                   mountPath: /var/lib/clickhouse
+              resources:
+                requests:
+                  memory: {{ $.Values.clickhouse.resources.memory }}
+                  cpu: {{ $.Values.clickhouse.resources.cpu }}
+                limits:
+                  memory: {{ $.Values.clickhouse.resources.memory }}
+                  cpu: {{ $.Values.clickhouse.resources.cpu}}
 
     volumeClaimTemplates:
       - name: data

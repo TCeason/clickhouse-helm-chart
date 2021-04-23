@@ -95,8 +95,11 @@ spec:
           image: "docker.io/zookeeper:3.6.0"
           resources:
             requests:
-              memory: "1Gi"
-              cpu: "0.5"
+              memory: {{ $.Values.zookeeper.resources.memory }}
+              cpu: {{ $.Values.zookeeper.resources.cpu }}
+            limits:
+              memory: {{ $.Values.zookeeper.resources.memory }}
+              cpu: {{ $.Values.zookeeper.resources.cpu }}
           ports:
             - containerPort: 2181
               name: client
